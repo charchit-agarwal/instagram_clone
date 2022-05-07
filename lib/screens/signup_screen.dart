@@ -1,6 +1,11 @@
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:instagram_clone/resources/auth_methods.dart';
 import 'package:instagram_clone/utils/colors.dart';
+import 'package:instagram_clone/utils/utils.dart';
 import 'package:instagram_clone/widgets/text_field_input.dart';
 
 class SignUpScreen extends StatefulWidget {
@@ -16,6 +21,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
   final TextEditingController _bioController = TextEditingController();
   final TextEditingController _usernameController = TextEditingController();
 
+  Uint8List? _profilePic;
+  bool _isLoading = false;
+
   @override
   void dispose() {
     // TODO: implement dispose
@@ -26,15 +34,37 @@ class _SignUpScreenState extends State<SignUpScreen> {
     _usernameController.dispose();
   }
 
+  void signUpUser() async {
+    // set loading to true
+    setState(() {
+      _isLoading = true;
+    });
+
+    // signup user using our authmethodds
+    String res = await AuthMethods().signUpUser(
+        email: _emailController.text,
+        password: _passwordController.text,
+        username: _usernameController.text,
+        bio: _bioController.text,
+        image: _profilePic!);
+    // if string returned is sucess, user has been created
+    if (res == "Success") {
+      setState(() {
+        _isLoading = false;
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       body: SafeArea(
         child: Container(
           padding: EdgeInsets.symmetric(horizontal: 32),
           width: double.infinity,
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Flexible(
                 child: Container(),
@@ -45,19 +75,30 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 color: primaryColor,
               ),
               const SizedBox(
-                height: 64,
+                height: 50,
               ),
               Stack(
                 children: [
-                  const CircleAvatar(
-                      radius: 64,
-                      backgroundImage: NetworkImage(
-                          'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTbokcyamJZfRi3I2cvtIQ51qxJbJ9InlNloQ&usqp=CAU')),
+                  _profilePic != null
+                      ? CircleAvatar(
+                          radius: 64,
+                          backgroundImage: MemoryImage(_profilePic!),
+                        )
+                      : const CircleAvatar(
+                          radius: 64,
+                          backgroundImage: NetworkImage(
+                              'https://www.tenforums.com/geek/gars/images/2/types/thumb_15951118880user.png'),
+                        ),
                   Positioned(
                     left: 89,
                     bottom: 8,
                     child: IconButton(
-                      onPressed: () {},
+                      onPressed: () async {
+                        Uint8List im = await pickImage(ImageSource.gallery);
+                        setState(() {
+                          _profilePic = im;
+                        });
+                      },
                       icon: const Icon(
                         Icons.add_a_photo,
                         color: Colors.grey,
@@ -70,10 +111,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 height: 30,
               ),
               TextFieldInput(
-                textEditingController: _usernameController,
-                hint: 'Enter your username',
-                textInputType: TextInputType.emailAddress,
-              ),
+                  textEditingController: _usernameController,
+                  hint: 'Enter your username',
+                  textInputType: TextInputType.text),
               const SizedBox(
                 height: 24,
               ),
@@ -95,15 +135,17 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 height: 24,
               ),
               TextFieldInput(
-                textEditingController: _passwordController,
+                textEditingController: _bioController,
                 hint: 'Enter your bio',
-                textInputType: TextInputType.visiblePassword,
-                isPass: true,
+                textInputType: TextInputType.text,
               ),
               const SizedBox(
                 height: 24,
               ),
               InkWell(
+                onTap: () {
+                  signUpUser();
+                },
                 child: Container(
                   width: double.infinity,
                   alignment: Alignment.center,
@@ -112,7 +154,13 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       color: blueColor,
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(8))),
-                  child: const Text('Sign Up'),
+                  child: _isLoading
+                      ? Center(
+                          child: CircularProgressIndicator(
+                            color: Colors.white,
+                          ),
+                        )
+                      : const Text('Sign Up'),
                 ),
               ),
               Flexible(

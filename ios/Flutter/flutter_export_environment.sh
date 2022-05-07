@@ -1,6 +1,6 @@
 #!/bin/sh
 # This is a generated file; do not edit or check into version control.
-export "FLUTTER_ROOT=/home/charchit957/development/flutter"
+export "FLUTTER_ROOT=/home/charchit957/snap/flutter/common/flutter"
 export "FLUTTER_APPLICATION_PATH=/home/charchit957/Desktop/instagram_clone"
 export "COCOAPODS_PARALLEL_CODE_SIGN=true"
 export "FLUTTER_TARGET=lib/main.dart"
