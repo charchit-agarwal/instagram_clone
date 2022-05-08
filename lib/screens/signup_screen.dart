@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:instagram_clone/resources/auth_methods.dart';
+import 'package:instagram_clone/responsive/responsive_screen_layout.dart';
+import 'package:instagram_clone/screens/login_screen.dart';
 import 'package:instagram_clone/utils/colors.dart';
 import 'package:instagram_clone/utils/utils.dart';
 import 'package:instagram_clone/widgets/text_field_input.dart';
@@ -49,12 +51,16 @@ class _SignUpScreenState extends State<SignUpScreen> {
         image: _profilePic!);
     // if string returned is sucess, user has been created
     if (res == "Success") {
-      setState(() {
-        _isLoading = false;
-      });
+      Navigator.of(context).pushReplacement(
+          MaterialPageRoute(builder: (context) => ResponsiveScreen()));
     } else {
       showSnackBar(res, context);
     }
+  }
+
+  void navigateToLoginScreen() {
+    Navigator.of(context)
+        .push(MaterialPageRoute(builder: (context) => LoginScreen()));
   }
 
   @override
@@ -157,7 +163,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(8))),
                   child: _isLoading
-                      ?const Center(
+                      ? const Center(
                           child: CircularProgressIndicator(
                             color: Colors.white,
                           ),
@@ -181,6 +187,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   ),
                   Container(
                     child: GestureDetector(
+                      onTap: navigateToLoginScreen,
                       child: const Text(
                         'Log In',
                         style: TextStyle(fontWeight: FontWeight.w900),
