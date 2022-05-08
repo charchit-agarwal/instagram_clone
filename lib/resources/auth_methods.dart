@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:instagram_clone/resources/storage_methods.dart';
+import 'package:instagram_clone/models/user.dart' as model;
 
 class AuthMethods {
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -28,16 +29,15 @@ class AuthMethods {
             email: email, password: password);
         String profileURL = await StorageMethods()
             .uploadImageToStorage('profilePics', image, false);
-
-        _firestore.collection('users').doc(cred.user!.uid).set({
-          'username': username,
-          'email': email,
-          'profileURL': profileURL,
-          'bio': bio,
-          'uid': cred.user!.uid,
-          'followers': [],
-          'following': [],
-        });
+        model.User user = model.User(
+            email: email,
+            username: username,
+            bio: bio,
+            uid: cred.user!.uid,
+            profileURL: profileURL,
+            followers: [],
+            following: []);
+        _firestore.collection('users').doc(cred.user!.uid).set(user.toJson());
         res = 'Success';
       }
     } catch (err) {
@@ -55,7 +55,7 @@ class AuthMethods {
       if (email.isNotEmpty || password.isNotEmpty) {
         await _auth.signInWithEmailAndPassword(
             email: email, password: password);
-              res = 'Success';
+        res = 'Success';
       }
     } catch (err) {
       res = err.toString();
