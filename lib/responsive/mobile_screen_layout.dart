@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:instagram_clone/models/user.dart' as model;
 import 'package:instagram_clone/provider/user_provider.dart';
 import 'package:instagram_clone/utils/colors.dart';
+import 'package:instagram_clone/utils/global_variables.dart';
 import 'package:provider/provider.dart';
 
 class MobileScreen extends StatefulWidget {
@@ -43,13 +44,7 @@ class _MobileScreenState extends State<MobileScreen> {
     return SafeArea(
       child: Scaffold(
         body: PageView(
-          children: [
-            Text('Home'),
-            Text('Search'),
-            Text('Post'),
-            Text('Notifications'),
-            Text('Account'),
-          ],
+          children: homeScreenElements,
           physics:const NeverScrollableScrollPhysics(),
           controller: pageController,
           onPageChanged: onPageChanged,
