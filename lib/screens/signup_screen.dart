@@ -52,6 +52,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
       setState(() {
         _isLoading = false;
       });
+    } else {
+      showSnackBar(res, context);
     }
   }
 
@@ -155,7 +157,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(8))),
                   child: _isLoading
-                      ? Center(
+                      ?const Center(
                           child: CircularProgressIndicator(
                             color: Colors.white,
                           ),

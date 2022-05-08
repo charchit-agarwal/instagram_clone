@@ -8,6 +8,7 @@ import 'package:instagram_clone/resources/storage_methods.dart';
 class AuthMethods {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+
   Future<String> signUpUser({
     required String email,
     required String password,
@@ -22,7 +23,7 @@ class AuthMethods {
           username.isNotEmpty ||
           bio.isNotEmpty ||
           // ignore: unnecessary_null_comparison
-          image != null) {
+          image.isNotEmpty) {
         UserCredential cred = await _auth.createUserWithEmailAndPassword(
             email: email, password: password);
         String profileURL = await StorageMethods()
@@ -38,6 +39,23 @@ class AuthMethods {
           'following': [],
         });
         res = 'Success';
+      }
+    } catch (err) {
+      res = err.toString();
+    }
+    return res;
+  }
+
+  Future<String> loginUser({
+    required String email,
+    required String password,
+  }) async {
+    String res = 'Some error occured.';
+    try {
+      if (email.isNotEmpty || password.isNotEmpty) {
+        await _auth.signInWithEmailAndPassword(
+            email: email, password: password);
+              res = 'Success';
       }
     } catch (err) {
       res = err.toString();

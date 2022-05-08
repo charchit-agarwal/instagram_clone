@@ -36,7 +36,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData.dark()
           .copyWith(scaffoldBackgroundColor: mobileBackgroundColor),
       // home: const ResponsiveScreen(),
-      home: SignUpScreen(),
+      home: LoginScreen(),
     );
   }
 }
