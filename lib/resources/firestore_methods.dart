@@ -48,6 +48,34 @@ class FireStoreMethods {
         });
       }
     } catch (err) {
+      print(
+        err.toString(),
+      );
+    }
+  }
+
+  Future<void> postComment(String comment, String postID, String username,
+      String profileURL, String uid) async {
+    try {
+      if (comment.isNotEmpty) {
+        
+        String commentID = const Uuid().v1();
+        await _firestore
+            .collection('posts')
+            .doc(postID)
+            .collection('comments')
+            .doc(commentID)
+            .set({
+          'profileURL': profileURL,
+          'uid': uid,
+          'username': username,
+          'postID': postID,
+          'datePublished': DateTime.now(),
+          'commentID': commentID,
+          'comment': comment
+        });
+      }
+    } catch (err) {
       print(err.toString());
     }
   }

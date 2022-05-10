@@ -1,17 +1,31 @@
 import 'package:flutter/material.dart';
+import 'package:instagram_clone/models/user.dart';
+import 'package:instagram_clone/provider/user_provider.dart';
+import 'package:instagram_clone/resources/firestore_methods.dart';
 import 'package:instagram_clone/utils/colors.dart';
 import 'package:instagram_clone/widgets/comment_card.dart';
+import 'package:provider/provider.dart';
 
 class CommentScreen extends StatefulWidget {
-  const CommentScreen({Key? key}) : super(key: key);
+  final snap;
+  const CommentScreen({Key? key,required this.snap}) : super(key: key);
 
   @override
   State<CommentScreen> createState() => _CommentScreenState();
 }
 
 class _CommentScreenState extends State<CommentScreen> {
+  final TextEditingController _controller = TextEditingController();
+  @override
+  void dispose() {
+    super.dispose();
+    _controller.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
+    User user = Provider.of<UserProvider>(context).getUser;
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: mobileBackgroundColor,
@@ -28,21 +42,28 @@ class _CommentScreenState extends State<CommentScreen> {
           child: Row(
             children: [
               CircleAvatar(
-                backgroundImage: NetworkImage(
-                    'https://images.unsplash.com/photo-1652081211511-d937cbb64722?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxlZGl0b3JpYWwtZmVlZHwxOHx8fGVufDB8fHx8&auto=format&fit=crop&w=500&q=60'),
+                backgroundImage: NetworkImage(user.profileURL),
               ),
               Expanded(
                 child: Container(
                   padding: EdgeInsets.only(left: 16, right: 8),
                   child: TextField(
+                    controller: _controller,
                     decoration: InputDecoration(
-                        hintText: 'Comment as username',
+                        hintText: 'Comment as ${user.username}',
                         border: InputBorder.none),
                   ),
                 ),
               ),
               TextButton(
-                onPressed: () {},
+                onPressed: () async {
+                  await FireStoreMethods().postComment(
+                      _controller.text,
+                      widget.snap['postID'],
+                      user.username,
+                      user.profileURL,
+                      user.uid);
+                },
                 child: Text(
                   'Comment',
                   style: TextStyle(color: blueColor),
