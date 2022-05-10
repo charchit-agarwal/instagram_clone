@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:instagram_clone/models/user.dart';
 import 'package:instagram_clone/provider/user_provider.dart';
@@ -18,6 +19,23 @@ class PostCard extends StatefulWidget {
 
 class _PostCardState extends State<PostCard> {
   bool isLikeAnimating = false;
+  int commentNum = 0;
+  @override
+  void initState() {
+    super.initState();
+    getComments();
+  }
+
+  getComments() async {
+    QuerySnapshot snapshot = await FirebaseFirestore.instance
+        .collection('posts')
+        .doc(widget.snap['postID'])
+        .collection('comments')
+        .get();
+    commentNum = snapshot.docs.length;
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
     User user = Provider.of<UserProvider>(context).getUser;
@@ -199,7 +217,7 @@ class _PostCardState extends State<PostCard> {
                   child: Container(
                     padding: const EdgeInsets.symmetric(vertical: 4),
                     child: Text(
-                      'View all 154 comments',
+                      'View all $commentNum comments',
                       style: TextStyle(color: secondaryColor, fontSize: 16),
                     ),
                   ),

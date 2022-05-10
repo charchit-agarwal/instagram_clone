@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:instagram_clone/models/user.dart';
 import 'package:instagram_clone/provider/user_provider.dart';
@@ -8,7 +10,7 @@ import 'package:provider/provider.dart';
 
 class CommentScreen extends StatefulWidget {
   final snap;
-  const CommentScreen({Key? key,required this.snap}) : super(key: key);
+  const CommentScreen({Key? key, required this.snap}) : super(key: key);
 
   @override
   State<CommentScreen> createState() => _CommentScreenState();
@@ -31,7 +33,28 @@ class _CommentScreenState extends State<CommentScreen> {
         backgroundColor: mobileBackgroundColor,
         title: const Text('Comments'),
       ),
-      body: CommentCard(),
+      body: StreamBuilder(
+        stream: FirebaseFirestore.instance
+            .collection('posts')
+            .doc(widget.snap['postID'])
+            .collection('comments')
+            .orderBy('datePublished', descending: true)
+            .snapshots(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(
+              child: CircularProgressIndicator(),
+            );
+          }
+          return ListView.builder(
+              itemCount: (snapshot.data! as dynamic).docs.length,
+              itemBuilder: (context, index) {
+                return CommentCard(
+                  snap: (snapshot.data! as dynamic).docs[index].data(),
+                );
+              });
+        },
+      ),
       bottomNavigationBar: SafeArea(
         child: Container(
           height: kToolbarHeight,
@@ -63,6 +86,9 @@ class _CommentScreenState extends State<CommentScreen> {
                       user.username,
                       user.profileURL,
                       user.uid);
+                  setState(() {
+                    _controller.clear();
+                  });
                 },
                 child: Text(
                   'Comment',
