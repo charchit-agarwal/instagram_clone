@@ -119,7 +119,7 @@ class _PostCardState extends State<PostCard> {
                   duration: const Duration(milliseconds: 200),
                   opacity: isLikeAnimating ? 1 : 0,
                   child: LikeAnimation(
-                      child: Icon(
+                      child: const Icon(
                         Icons.favorite,
                         color: Colors.white,
                         size: 120,
@@ -217,12 +217,21 @@ class _PostCardState extends State<PostCard> {
                   ),
                 ),
                 InkWell(
-                  onTap: () {},
+                  onTap: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) => CommentScreen(
+                          snap: widget.snap,
+                        ),
+                      ),
+                    );
+                  },
                   child: Container(
                     padding: const EdgeInsets.symmetric(vertical: 4),
                     child: Text(
                       'View all $commentNum comments',
-                      style: TextStyle(color: secondaryColor, fontSize: 16),
+                      style:
+                          const TextStyle(color: secondaryColor, fontSize: 16),
                     ),
                   ),
                 ),
