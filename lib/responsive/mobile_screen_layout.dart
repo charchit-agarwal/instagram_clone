@@ -1,10 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:instagram_clone/models/user.dart' as model;
-import 'package:instagram_clone/provider/user_provider.dart';
 import 'package:instagram_clone/utils/colors.dart';
 import 'package:instagram_clone/utils/global_variables.dart';
-import 'package:provider/provider.dart';
 
 class MobileScreen extends StatefulWidget {
   const MobileScreen({Key? key}) : super(key: key);
@@ -45,7 +42,7 @@ class _MobileScreenState extends State<MobileScreen> {
       child: Scaffold(
         body: PageView(
           children: homeScreenElements,
-          physics:const NeverScrollableScrollPhysics(),
+          physics: const NeverScrollableScrollPhysics(),
           controller: pageController,
           onPageChanged: onPageChanged,
         ),
