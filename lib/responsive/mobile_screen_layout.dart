@@ -40,6 +40,7 @@ class _MobileScreenState extends State<MobileScreen> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
+        
         body: PageView(
           children: homeScreenElements,
           physics: const NeverScrollableScrollPhysics(),

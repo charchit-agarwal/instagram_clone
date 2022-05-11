@@ -3,10 +3,12 @@ import 'dart:math';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:instagram_clone/resources/auth_methods.dart';
 import 'package:instagram_clone/resources/firestore_methods.dart';
 import 'package:instagram_clone/screens/login_screen.dart';
 import 'package:instagram_clone/utils/colors.dart';
+import 'package:instagram_clone/utils/global_variables.dart';
 import 'package:instagram_clone/utils/utils.dart';
 import 'package:instagram_clone/widgets/follow_button.dart';
 
@@ -177,9 +179,20 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         }
                         return GridView.builder(
                             shrinkWrap: true,
-                            itemCount: (snapshot.data! as dynamic).docs.length,
-                            gridDelegate:
-                                const SliverGridDelegateWithFixedCrossAxisCount(
+                            itemCount:
+                                (snapshot.data! as dynamic).docs.length,
+                            gridDelegate: MediaQuery.of(context).size.width >
+                                    webScreenSize
+                                ? SliverQuiltedGridDelegate(
+                                    crossAxisCount: 3,
+                                    mainAxisSpacing: 8,
+                                    crossAxisSpacing: 8,
+                                    pattern: [
+                                        const QuiltedGridTile(1, 1),
+                                        const QuiltedGridTile(1, 1),
+                                        const QuiltedGridTile(1, 1)
+                                      ])
+                                : const SliverGridDelegateWithFixedCrossAxisCount(
                                     crossAxisSpacing: 5,
                                     mainAxisSpacing: 1.5,
                                     crossAxisCount: 3,
