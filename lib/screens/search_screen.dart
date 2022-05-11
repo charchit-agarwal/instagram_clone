@@ -81,10 +81,10 @@ class _SearchScreenState extends State<SearchScreen> {
                     mainAxisSpacing: 8,
                     crossAxisSpacing: 8,
                     pattern: [
-                      QuiltedGridTile(2, 2),
-                      QuiltedGridTile(1, 1),
-                      QuiltedGridTile(1, 1),
-                      QuiltedGridTile(1, 2),
+                    const  QuiltedGridTile(2, 2),
+                    const  QuiltedGridTile(1, 1),
+                    const  QuiltedGridTile(1, 1),
+                    const  QuiltedGridTile(1, 2),
                     ],
                   ),
                 );
