@@ -71,11 +71,41 @@ class FireStoreMethods {
           'postID': postID,
           'datePublished': DateTime.now(),
           'commentID': commentID,
-          'comment': comment
+          'comment': comment,
+          'likes': [],
         });
       }
     } catch (err) {
       print(err.toString());
+    }
+  }
+
+  Future<void> likeComment(
+      String uid, String postID, String commentID, List likes) async {
+    try {
+      if (likes.contains(uid)) {
+        await _firestore
+            .collection('posts')
+            .doc(postID)
+            .collection('comments')
+            .doc(commentID)
+            .update({
+          'likes': FieldValue.arrayRemove([uid])
+        });
+      } else {
+        await _firestore
+            .collection('posts')
+            .doc(postID)
+            .collection('comments')
+            .doc(commentID)
+            .update({
+          'likes': FieldValue.arrayUnion([uid])
+        });
+      }
+    } catch (err) {
+      print(
+        err.toString(),
+      );
     }
   }
 
@@ -97,25 +127,21 @@ class FireStoreMethods {
           await _firestore.collection('users').doc(uid).get();
       List following = (snap.data()! as dynamic)['following'];
       if (following.contains(followID)) {
-        await _firestore
-            .collection('users')
-            .doc(uid)
-            .update({'following': FieldValue.arrayRemove([followID])});
+        await _firestore.collection('users').doc(uid).update({
+          'following': FieldValue.arrayRemove([followID])
+        });
 
-             await _firestore
-            .collection('users')
-            .doc(followID)
-            .update({'followers': FieldValue.arrayRemove([uid])});
-      }else{
-         await _firestore
-            .collection('users')
-            .doc(uid)
-            .update({'following': FieldValue.arrayUnion([followID])});
+        await _firestore.collection('users').doc(followID).update({
+          'followers': FieldValue.arrayRemove([uid])
+        });
+      } else {
+        await _firestore.collection('users').doc(uid).update({
+          'following': FieldValue.arrayUnion([followID])
+        });
 
-             await _firestore
-            .collection('users')
-            .doc(followID)
-            .update({'followers': FieldValue.arrayUnion([uid])});
+        await _firestore.collection('users').doc(followID).update({
+          'followers': FieldValue.arrayUnion([uid])
+        });
       }
     } catch (err) {
       // ignore: avoid_print
